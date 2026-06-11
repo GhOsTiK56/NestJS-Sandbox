@@ -1,10 +1,6 @@
-import { Injectable } from '@nestjs/common'
-
-export interface createCatRequest {
-  name: string
-  age: number
-  breed: string
-}
+import { Injectable, NotFoundException } from '@nestjs/common'
+import { UpdateCatDto } from './dto/requests/update-cat.dto'
+import { CreateCatDto } from './dto/requests'
 
 export interface Cat {
   id: number
@@ -18,7 +14,7 @@ export class CatsService {
   private cats: Cat[] = []
   private id = 1
 
-  public create(data: createCatRequest): Cat {
+  public create(data: CreateCatDto): Cat {
     const newCat: Cat = {
       id: this.id++,
       ...data
@@ -44,5 +40,23 @@ export class CatsService {
 
       return matchAge && matchBreed
     })
+  }
+
+  public update(id: number, data: UpdateCatDto): Cat | undefined {
+    const cat = this.cats.find((cat) => cat.id === id)
+
+    if (!cat) {
+      throw new NotFoundException(`Cat with id: ${id} not found`)
+    }
+
+    // assign мутирует объект и автоматически добавляет в массив
+    Object.assign(cat, data)
+
+    return cat
+  }
+
+  public remove(id: number) {
+    this.cats = this.cats.filter((cat) => cat.id !== id)
+    return { message: 'ok' }
   }
 }
