@@ -8,25 +8,25 @@ import { ApiOperation } from '@nestjs/swagger';
 
 @Controller()
 export class AppController {
-	constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService) {}
 
-	@ApiOperation({
-		summary: 'Welcome endPoint',
-		description: 'Returns simple API welcome message'
-	})
-	@Get()
-	@HttpCode(HttpStatus.OK)
-	public getHello() {
-		return this.appService.getHello();
-	}
+  @ApiOperation({
+    summary: 'Welcome endPoint',
+    description: 'Returns simple API welcome message'
+  })
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  public getHello() {
+    return this.appService.getHello();
+  }
 
-	@ApiOperation({
-		summary: 'Health check',
-		description: 'Checks if the Gateway is running'
-	})
-	@Get('health')
-	@HttpCode(HttpStatus.OK)
-	public healthCheck() {
-		return this.appService.healthCheck();
-	}
+  @ApiOperation({
+    summary: 'Health check',
+    description: 'Checks if the Gateway is running'
+  })
+  @Get('health')
+  @HttpCode(HttpStatus.OK)
+  public healthCheck() {
+    return this.appService.healthCheck();
+  }
 }
