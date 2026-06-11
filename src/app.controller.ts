@@ -1,6 +1,6 @@
-import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common'
-import { AppService } from './app.service'
-import { ApiOperation } from '@nestjs/swagger'
+import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
+import { AppService } from './app.service';
+import { ApiOperation } from '@nestjs/swagger';
 
 /*
 Контроллер отвечает за обработку запросов и отправку ответов обрабно клиенту
@@ -17,7 +17,7 @@ export class AppController {
 	@Get()
 	@HttpCode(HttpStatus.OK)
 	public getHello() {
-		return this.appService.getHello()
+		return this.appService.getHello();
 	}
 
 	@ApiOperation({
@@ -27,6 +27,6 @@ export class AppController {
 	@Get('health')
 	@HttpCode(HttpStatus.OK)
 	public healthCheck() {
-		return this.appService.healthCheck()
+		return this.appService.healthCheck();
 	}
 }

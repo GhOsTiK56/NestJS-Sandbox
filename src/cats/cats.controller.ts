@@ -11,12 +11,12 @@ import {
 	Put,
 	Query,
 	ValidationPipe
-} from '@nestjs/common'
-import { CatsService } from './cats.service'
-import { CreateCatDto } from './dto/requests/create-cat.dto'
-import { ApiOperation } from '@nestjs/swagger'
-import { FindCatsWhereDto } from './dto/requests/find-cats-where.dto'
-import { UpdateCatDto } from './dto/requests/update-cat.dto'
+} from '@nestjs/common';
+import { CatsService } from './cats.service';
+import { CreateCatDto } from './dto/requests/create-cat.dto';
+import { ApiOperation } from '@nestjs/swagger';
+import { FindCatsWhereDto } from './dto/requests/find-cats-where.dto';
+import { UpdateCatDto } from './dto/requests/update-cat.dto';
 
 @Controller('cats')
 export class CatsController {
@@ -29,7 +29,7 @@ export class CatsController {
 	@Post()
 	@HttpCode(HttpStatus.CREATED)
 	public create(@Body() createCatDto: CreateCatDto) {
-		return this.catsService.create(createCatDto)
+		return this.catsService.create(createCatDto);
 	}
 
 	@ApiOperation({
@@ -39,7 +39,7 @@ export class CatsController {
 	@Get()
 	@HttpCode(HttpStatus.OK)
 	public findAll() {
-		return this.catsService.findAll()
+		return this.catsService.findAll();
 	}
 
 	@ApiOperation({
@@ -48,7 +48,7 @@ export class CatsController {
 	})
 	@Get('where')
 	public findAllWhere(@Query(ValidationPipe) query: FindCatsWhereDto) {
-		return this.catsService.findAllWhere(query.age, query.breed)
+		return this.catsService.findAllWhere(query.age, query.breed);
 	}
 
 	@ApiOperation({
@@ -57,7 +57,7 @@ export class CatsController {
 	})
 	@Get(':id')
 	findOne(@Param('id', ParseIntPipe) id: number) {
-		return this.catsService.findWithId(id)
+		return this.catsService.findWithId(id);
 	}
 
 	@ApiOperation({
@@ -69,7 +69,7 @@ export class CatsController {
 		@Param('id', ParseIntPipe) id: number,
 		@Body() data: UpdateCatDto
 	) {
-		return this.catsService.update(id, data)
+		return this.catsService.update(id, data);
 	}
 
 	@ApiOperation({
@@ -78,6 +78,6 @@ export class CatsController {
 	})
 	@Delete(':id')
 	public remove(@Param('id', ParseIntPipe) id: number) {
-		return this.catsService.remove(id)
+		return this.catsService.remove(id);
 	}
 }

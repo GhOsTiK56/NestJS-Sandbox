@@ -1,6 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger'
-import { Type } from 'class-transformer'
-import { IsInt, IsOptional, IsString } from 'class-validator'
+import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { IsInt, IsOptional, IsString } from 'class-validator';
 
 export class FindCatsWhereDto {
 	@ApiProperty({
@@ -9,12 +9,12 @@ export class FindCatsWhereDto {
 	@IsOptional()
 	@IsInt()
 	@Type(() => Number)
-	age?: number
+	age?: number;
 
 	@ApiProperty({
 		example: 'average'
 	})
 	@IsOptional()
 	@IsString()
-	breed?: string
+	breed?: string;
 }

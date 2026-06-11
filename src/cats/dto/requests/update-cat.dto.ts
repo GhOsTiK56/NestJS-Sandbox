@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger'
-import { IsNumber, IsOptional, IsString } from 'class-validator'
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UpdateCatDto {
 	@ApiProperty({
@@ -7,19 +7,19 @@ export class UpdateCatDto {
 	})
 	@IsOptional()
 	@IsString()
-	name?: string
+	name?: string;
 
 	@IsOptional()
 	@ApiProperty({
 		example: '20'
 	})
 	@IsNumber()
-	age?: number
+	age?: number;
 
 	@IsOptional()
 	@ApiProperty({
 		example: 'averageRename'
 	})
 	@IsString()
-	breed?: string
+	breed?: string;
 }
