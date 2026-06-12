@@ -2,10 +2,6 @@ import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ApiOperation } from '@nestjs/swagger';
 
-/*
-Контроллер отвечает за обработку запросов и отправку ответов обрабно клиенту
-*/
-
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
