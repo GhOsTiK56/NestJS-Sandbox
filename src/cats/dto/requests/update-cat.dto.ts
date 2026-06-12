@@ -7,19 +7,19 @@ export class UpdateCatDto {
   })
   @IsOptional()
   @IsString()
-  name?: string;
+  name: string;
 
-  @IsOptional()
   @ApiProperty({
     example: '20'
   })
-  @IsNumber()
-  age?: number;
-
   @IsOptional()
+  @IsNumber()
+  age: number;
+
   @ApiProperty({
     example: 'averageRename'
   })
+  @IsOptional()
   @IsString()
-  breed?: string;
+  breed: string;
 }

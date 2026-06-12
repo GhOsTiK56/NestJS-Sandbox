@@ -9,12 +9,12 @@ export class FindCatsWhereDto {
   @IsOptional()
   @IsInt()
   @Type(() => Number)
-  age?: number;
+  age: number;
 
   @ApiProperty({
     example: 'average'
   })
   @IsOptional()
   @IsString()
-  breed?: string;
+  breed: string;
 }
