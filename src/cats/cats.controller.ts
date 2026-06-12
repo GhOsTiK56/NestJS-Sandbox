@@ -13,10 +13,12 @@ import {
   ValidationPipe
 } from '@nestjs/common';
 import { CatsService } from './cats.service';
-import { CreateCatDto } from './dto/requests/create-cat.dto';
 import { ApiOperation } from '@nestjs/swagger';
-import { FindCatsWhereDto } from './dto/requests/find-cats-where.dto';
-import { UpdateCatDto } from './dto/requests/update-cat.dto';
+import {
+  CreateCatRequest,
+  FindCatsWhereRequest,
+  UpdateCatRequest
+} from './dto';
 
 @Controller('cats')
 export class CatsController {
@@ -28,7 +30,7 @@ export class CatsController {
   })
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  public create(@Body() createCatDto: CreateCatDto) {
+  public create(@Body() createCatDto: CreateCatRequest) {
     return this.catsService.create(createCatDto);
   }
 
@@ -47,7 +49,7 @@ export class CatsController {
     description: 'Get all cats where'
   })
   @Get('where')
-  public findAllWhere(@Query(ValidationPipe) query: FindCatsWhereDto) {
+  public findAllWhere(@Query(ValidationPipe) query: FindCatsWhereRequest) {
     return this.catsService.findAllWhere(query.age, query.breed);
   }
 
@@ -67,7 +69,7 @@ export class CatsController {
   @Put(':id')
   public update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() data: UpdateCatDto
+    @Body() data: UpdateCatRequest
   ) {
     return this.catsService.update(id, data);
   }
@@ -79,5 +81,14 @@ export class CatsController {
   @Delete(':id')
   public remove(@Param('id', ParseIntPipe) id: number) {
     return this.catsService.remove(id);
+  }
+
+  @ApiOperation({
+    summary: 'Delete all cats',
+    description: 'Delete all cats'
+  })
+  @Delete()
+  public removeAll() {
+    return this.catsService.removeAll();
   }
 }
