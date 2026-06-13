@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { Logger, ValidationPipe } from '@nestjs/common';
+import { loggerMiddleware } from './common/middlewares/logger.middleware';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -30,6 +31,7 @@ async function bootstrap() {
   const host = config.getOrThrow<string>('HTTP_HOST');
   const port = config.getOrThrow<number>('HTTP_PORT');
 
+  app.use(loggerMiddleware);
   await app.listen(port ?? 3000);
 
   logger.log(`App started on ${host}`);
