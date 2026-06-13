@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateCatRequest, UpdateCatRequest } from './dto';
-import { Cat } from 'prisma/generated/client';
+import type { CreateCatRequest, UpdateCatRequest } from './dto';
+import type { Cat } from 'prisma/generated/client';
 
 @Injectable()
 export class CatsService {
