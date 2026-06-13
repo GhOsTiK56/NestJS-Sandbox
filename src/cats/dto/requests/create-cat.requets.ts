@@ -3,7 +3,7 @@ import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateCatRequest {
   @ApiProperty({
-    example: 'Myavka'
+    example: 'Cat1'
   })
   @IsString()
   @IsNotEmpty()

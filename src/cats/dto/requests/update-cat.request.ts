@@ -3,14 +3,14 @@ import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UpdateCatRequest {
   @ApiProperty({
-    example: 'MyavkaRename'
+    example: 'CatRename'
   })
   @IsOptional()
   @IsString()
   name?: string;
 
   @ApiProperty({
-    example: '20'
+    example: 10
   })
   @IsOptional()
   @IsNumber()
