@@ -13,30 +13,50 @@ import {
   ValidationPipe
 } from '@nestjs/common';
 import { CatsService } from './cats.service';
-import { ApiOperation } from '@nestjs/swagger';
 import {
-  CreateCatRequest,
-  FindCatsWhereRequest,
-  UpdateCatRequest
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags
+} from '@nestjs/swagger';
+import {
+  CreateCatRequestDto,
+  FindCatsWhereRequestDto,
+  UpdateCatRequestDto
 } from './dto';
+import { CatResponseDto } from './dto';
 
+@ApiTags('Cats')
 @Controller('cats')
 export class CatsController {
   constructor(private readonly catsService: CatsService) {}
 
   @ApiOperation({
     summary: 'Create cat',
-    description: 'Create cat'
+    description: 'Creates one cat'
   })
+  @ApiCreatedResponse({
+    description: 'The cat was created',
+    type: CatResponseDto
+  })
+  @ApiBadRequestResponse({ description: 'The cat was not created' })
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  public create(@Body() createCatDto: CreateCatRequest) {
+  public create(
+    @Body() createCatDto: CreateCatRequestDto
+  ): Promise<CatResponseDto> {
     return this.catsService.create(createCatDto);
   }
 
   @ApiOperation({
-    summary: 'Get all cats list',
-    description: 'Get all cats list'
+    summary: 'Get a list of all the cats',
+    description: 'Return a list of all the cats'
+  })
+  @ApiOkResponse({
+    description: 'The list of cats was founded',
+    type: [CatResponseDto]
   })
   @Get()
   @HttpCode(HttpStatus.OK)
@@ -45,48 +65,75 @@ export class CatsController {
   }
 
   @ApiOperation({
-    summary: 'Get all cats where',
-    description: 'Get all cats where'
+    summary: 'Get a list of all the cats that',
+    description: 'Returns a list of all cats that have'
+  })
+  @ApiOkResponse({
+    description: 'The list of cats where..., was founded',
+    type: [CatResponseDto]
   })
   @Get('where')
-  public findAllWhere(@Query(ValidationPipe) query: FindCatsWhereRequest) {
+  @HttpCode(HttpStatus.OK)
+  public findAllWhere(@Query(ValidationPipe) query: FindCatsWhereRequestDto) {
     return this.catsService.findAllWhere(query.age, query.breed);
   }
 
   @ApiOperation({
-    summary: 'Get a cat by id',
-    description: 'Get a cat by id'
+    summary: 'Get a cat by ID',
+    description: 'Return a cat by ID'
   })
+  @ApiOkResponse({ description: 'The cat is found', type: CatResponseDto })
+  @ApiNotFoundResponse({ description: 'The cat was not found' })
+  @HttpCode(HttpStatus.OK)
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  findById(@Param('id', ParseIntPipe) id: number): Promise<CatResponseDto> {
     return this.catsService.findWithId(id);
   }
 
   @ApiOperation({
-    summary: 'Put a cat by id',
-    description: 'Put a cat by id'
+    summary: 'Update the cat by ID',
+    description: 'Returns the updated cat by ID'
   })
+  @ApiOkResponse({
+    description: 'The cat has been successfully updated',
+    type: CatResponseDto
+  })
+  @ApiNotFoundResponse({ description: 'The cat was not found' })
+  @HttpCode(HttpStatus.OK)
   @Put(':id')
   public update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() data: UpdateCatRequest
-  ) {
+    @Body() data: UpdateCatRequestDto
+  ): Promise<CatResponseDto> {
     return this.catsService.update(id, data);
   }
 
   @ApiOperation({
-    summary: 'Delete a cat by id',
-    description: 'Delete a cat by id'
+    summary: 'Delete a cat by ID',
+    description: 'Deletes a cat by ID'
   })
+  @ApiOkResponse({
+    description: 'The cat was successfully deleted',
+    type: CatResponseDto
+  })
+  @ApiNotFoundResponse({ description: 'The cat was not found' })
+  @HttpCode(HttpStatus.OK)
   @Delete(':id')
-  public remove(@Param('id', ParseIntPipe) id: number) {
+  public remove(
+    @Param('id', ParseIntPipe) id: number
+  ): Promise<CatResponseDto> {
     return this.catsService.remove(id);
   }
 
   @ApiOperation({
-    summary: 'Delete all cats',
-    description: 'Delete all cats'
+    summary: 'Delete all of cats',
+    description: 'Delete all of cats'
   })
+  @ApiOkResponse({
+    description: 'The list of cats where..., was founded',
+    type: [CatResponseDto]
+  })
+  @HttpCode(HttpStatus.OK)
   @Delete()
   public removeAll() {
     return this.catsService.removeAll();
