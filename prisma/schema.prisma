@@ -9,11 +9,14 @@ datasource db {
 }
 
 model Cat {
-  id Int @id @default(autoincrement())
+  id String @id @default(nanoid())
 
   name  String
   age   Int
   breed String
 
-  @@map("cat")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("cats")
 }
