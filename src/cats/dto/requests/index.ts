@@ -1,3 +1,3 @@
-export * from './create-cat.requets';
-export * from './find-cats-where.request';
-export * from './update-cat.request';
+export * from './create-cat.requets.dto';
+export * from './find-cats-where.request.dto';
+export * from './update-cat.request.dto';

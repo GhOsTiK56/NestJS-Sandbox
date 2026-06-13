@@ -34,13 +34,16 @@ async function bootstrap() {
       'https://github.com/GhOsTiK56/NestJS-Sandbox',
       'karenheister5@gmail.com'
     )
+    .addBearerAuth()
     .setVersion('1.0')
     .build();
 
   const documentFactory = () =>
     SwaggerModule.createDocument(app, swaggerConfig);
 
-  SwaggerModule.setup('/docs', app, documentFactory);
+  SwaggerModule.setup('/docs', app, documentFactory, {
+    customSiteTitle: 'NestJS-Sandbox'
+  });
 
   const host = config.getOrThrow<string>('HTTP_HOST');
   const port = config.getOrThrow<number>('HTTP_PORT');
