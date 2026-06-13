@@ -24,14 +24,22 @@ async function bootstrap() {
   const config = app.get(ConfigService);
   const logger = new Logger();
 
+  // OpenAPI Swagger
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('Cats')
-    .setDescription('The cats API description')
+    .setTitle('Cats API')
+    .setDescription('API documentation for Cats')
+    .setVersion('1.0.0')
+    .setContact(
+      'Ghostik',
+      'https://github.com/GhOsTiK56/NestJS-Sandbox',
+      'karenheister5@gmail.com'
+    )
     .setVersion('1.0')
-    .addTag('cats')
     .build();
+
   const documentFactory = () =>
     SwaggerModule.createDocument(app, swaggerConfig);
+
   SwaggerModule.setup('/docs', app, documentFactory);
 
   const host = config.getOrThrow<string>('HTTP_HOST');
