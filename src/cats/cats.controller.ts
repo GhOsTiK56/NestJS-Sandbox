@@ -86,7 +86,7 @@ export class CatsController {
   @ApiNotFoundResponse({ description: 'The cat was not found' })
   @HttpCode(HttpStatus.OK)
   @Get(':id')
-  findById(@Param('id', ParseIntPipe) id: number): Promise<CatResponseDto> {
+  findById(@Param('id') id: string): Promise<CatResponseDto> {
     return this.catsService.findWithId(id);
   }
 
@@ -102,7 +102,7 @@ export class CatsController {
   @HttpCode(HttpStatus.OK)
   @Put(':id')
   public update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() data: UpdateCatRequestDto
   ): Promise<CatResponseDto> {
     return this.catsService.update(id, data);
@@ -120,7 +120,7 @@ export class CatsController {
   @HttpCode(HttpStatus.OK)
   @Delete(':id')
   public remove(
-    @Param('id', ParseIntPipe) id: number
+    @Param('id', ParseIntPipe) id: string
   ): Promise<CatResponseDto> {
     return this.catsService.remove(id);
   }

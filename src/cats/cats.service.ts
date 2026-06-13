@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import type { CreateCatRequestDto, UpdateCatRequestDto } from './dto';
-import type { Cat } from 'prisma/generated/client';
+import { Cat } from 'prisma/generated/client';
 
 @Injectable()
 export class CatsService {
@@ -19,7 +19,7 @@ export class CatsService {
     return await this.prismaService.cat.findMany();
   }
 
-  public async findWithId(id: number): Promise<Cat> {
+  public async findWithId(id: string): Promise<Cat> {
     const cat = await this.prismaService.cat.findUnique({
       where: {
         id
@@ -42,7 +42,7 @@ export class CatsService {
     });
   }
 
-  public async update(id: number, data: UpdateCatRequestDto): Promise<Cat> {
+  public async update(id: string, data: UpdateCatRequestDto): Promise<Cat> {
     const cat = await this.prismaService.cat.findUnique({
       where: {
         id
@@ -63,7 +63,7 @@ export class CatsService {
     });
   }
 
-  public async remove(id: number): Promise<Cat> {
+  public async remove(id: string): Promise<Cat> {
     const cat = await this.prismaService.cat.delete({
       where: {
         id
