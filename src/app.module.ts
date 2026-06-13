@@ -7,8 +7,6 @@ import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
-    // Объявляю подключение конфига глобально, чтобы не импортировать его
-    // в каждом новом модуле
     ConfigModule.forRoot({
       isGlobal: true
     }),
