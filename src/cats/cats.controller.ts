@@ -9,8 +9,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
-  Query,
-  ValidationPipe
+  Query
 } from '@nestjs/common';
 import { CatsService } from './cats.service';
 import {
@@ -23,7 +22,7 @@ import {
 } from '@nestjs/swagger';
 import {
   CreateCatRequestDto,
-  FindCatsWhereRequestDto,
+  FindAllCatsRequestDto,
   UpdateCatRequestDto
 } from './dto';
 import { CatResponseDto } from './dto';
@@ -60,24 +59,8 @@ export class CatsController {
   })
   @Get()
   @HttpCode(HttpStatus.OK)
-  public async findAll() {
-    return await this.catsService.findAll();
-  }
-
-  @ApiOperation({
-    summary: 'Get a list of all the cats that',
-    description: 'Returns a list of all cats that have'
-  })
-  @ApiOkResponse({
-    description: 'The list of cats where..., was founded',
-    type: [CatResponseDto]
-  })
-  @Get('where')
-  @HttpCode(HttpStatus.OK)
-  public async findAllWhere(
-    @Query(ValidationPipe) query: FindCatsWhereRequestDto
-  ) {
-    return await this.catsService.findAllWhere(query.age, query.breed);
+  public async findAll(@Query() query: FindAllCatsRequestDto) {
+    return await this.catsService.findAll(query.age, query.breed);
   }
 
   @ApiOperation({

@@ -8,15 +8,20 @@ export class CatsService {
   constructor(private readonly prismaService: PrismaService) {}
 
   public async create(data: CreateCatRequestDto): Promise<Cat> {
-    const cat = await this.prismaService.cat.create({
-      data
-    });
-
-    return cat;
-  }
-
-  public async findAll(): Promise<Cat[]> {
-    return await this.prismaService.cat.findMany();
+    // const cat = await this.prismaService.cat.create({
+    //   data
+    // });
+    //
+    // return cat;
+    return {
+      id: 'string',
+      userId: 'string',
+      age: 3,
+      name: 'name',
+      breed: 'breed',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
   }
 
   public async findWithId(id: string): Promise<Cat> {
@@ -33,7 +38,7 @@ export class CatsService {
     return cat;
   }
 
-  public async findAllWhere(age?: number, breed?: string): Promise<Cat[]> {
+  public async findAll(age?: number, breed?: string): Promise<Cat[]> {
     return await this.prismaService.cat.findMany({
       where: {
         age,
