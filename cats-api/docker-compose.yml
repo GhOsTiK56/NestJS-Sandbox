@@ -1,0 +1,21 @@
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=${DATABASE_NAME}
+    ports:
+      - 5433:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    networks:
+      - cats-api
+
+volumes:
+  postgres_data:
+
+networks:
+  cats-api:
