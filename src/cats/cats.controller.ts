@@ -44,10 +44,10 @@ export class CatsController {
   @ApiBadRequestResponse({ description: 'The cat was not created' })
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  public create(
+  public async create(
     @Body() createCatDto: CreateCatRequestDto
   ): Promise<CatResponseDto> {
-    return this.catsService.create(createCatDto);
+    return await this.catsService.create(createCatDto);
   }
 
   @ApiOperation({
@@ -60,8 +60,8 @@ export class CatsController {
   })
   @Get()
   @HttpCode(HttpStatus.OK)
-  public findAll() {
-    return this.catsService.findAll();
+  public async findAll() {
+    return await this.catsService.findAll();
   }
 
   @ApiOperation({
@@ -74,8 +74,10 @@ export class CatsController {
   })
   @Get('where')
   @HttpCode(HttpStatus.OK)
-  public findAllWhere(@Query(ValidationPipe) query: FindCatsWhereRequestDto) {
-    return this.catsService.findAllWhere(query.age, query.breed);
+  public async findAllWhere(
+    @Query(ValidationPipe) query: FindCatsWhereRequestDto
+  ) {
+    return await this.catsService.findAllWhere(query.age, query.breed);
   }
 
   @ApiOperation({
@@ -86,8 +88,8 @@ export class CatsController {
   @ApiNotFoundResponse({ description: 'The cat was not found' })
   @HttpCode(HttpStatus.OK)
   @Get(':id')
-  findById(@Param('id') id: string): Promise<CatResponseDto> {
-    return this.catsService.findWithId(id);
+  public async findById(@Param('id') id: string): Promise<CatResponseDto> {
+    return await this.catsService.findWithId(id);
   }
 
   @ApiOperation({
@@ -101,11 +103,11 @@ export class CatsController {
   @ApiNotFoundResponse({ description: 'The cat was not found' })
   @HttpCode(HttpStatus.OK)
   @Put(':id')
-  public update(
+  public async update(
     @Param('id') id: string,
     @Body() data: UpdateCatRequestDto
   ): Promise<CatResponseDto> {
-    return this.catsService.update(id, data);
+    return await this.catsService.update(id, data);
   }
 
   @ApiOperation({
@@ -119,10 +121,10 @@ export class CatsController {
   @ApiNotFoundResponse({ description: 'The cat was not found' })
   @HttpCode(HttpStatus.OK)
   @Delete(':id')
-  public remove(
+  public async remove(
     @Param('id', ParseIntPipe) id: string
   ): Promise<CatResponseDto> {
-    return this.catsService.remove(id);
+    return await this.catsService.remove(id);
   }
 
   @ApiOperation({
@@ -135,7 +137,7 @@ export class CatsController {
   })
   @HttpCode(HttpStatus.OK)
   @Delete()
-  public removeAll() {
-    return this.catsService.removeAll();
+  public async removeAll() {
+    return await this.catsService.removeAll();
   }
 }
