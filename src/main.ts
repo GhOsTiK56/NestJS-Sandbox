@@ -6,6 +6,7 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { loggerMiddleware } from './common/middlewares/logger.middleware';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
+import { Request, Response } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -42,7 +43,8 @@ async function bootstrap() {
     SwaggerModule.createDocument(app, swaggerConfig);
 
   SwaggerModule.setup('/docs', app, documentFactory, {
-    customSiteTitle: 'NestJS-Sandbox'
+    customSiteTitle: 'NestJS-Sandbox',
+    jsonDocumentUrl: '/docs-json'
   });
 
   const host = config.getOrThrow<string>('HTTP_HOST');
