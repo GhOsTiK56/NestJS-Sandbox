@@ -7,7 +7,7 @@ import {
   MinLength
 } from 'class-validator';
 
-export class LoginReqeustDto {
+export class LoginRequestDto {
   @ApiProperty({
     example: 'email@gmail.com'
   })

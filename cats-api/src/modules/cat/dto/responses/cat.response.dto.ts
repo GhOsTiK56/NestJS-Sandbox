@@ -1,23 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { Expose } from 'class-transformer';
 
 export class CatResponseDto {
   @ApiProperty({
     example: 'Cat1'
   })
-  @IsString()
+  @Expose()
   name!: string;
 
   @ApiProperty({
     example: 3
   })
-  @IsNumber()
+  @Expose()
   age!: number;
 
   @ApiProperty({
     example: 'average'
   })
-  @IsString()
-  @IsOptional()
+  @Expose()
   breed?: string;
 }

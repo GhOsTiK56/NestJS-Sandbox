@@ -6,15 +6,15 @@ import {
   ApiOkResponse,
   ApiOperation
 } from '@nestjs/swagger';
-import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { Protected } from './decorators/protected.decorator';
 import {
-  LoginReqeustDto,
-  RefreshReqeustDto,
+  LoginRequestDto,
+  RefreshRequestDto,
   RegisterRequestDto,
   TokensResponseDto
 } from './dto';
 import { OkResponseDto } from '../../common/dto';
+import { CurrentUser } from '../../common';
 
 @Controller('auth')
 export class AuthController {
@@ -30,10 +30,10 @@ export class AuthController {
   })
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
-  public async register(
+  public register(
     @Body() data: RegisterRequestDto
   ): Promise<TokensResponseDto> {
-    return await this.authService.register(data);
+    return this.authService.register(data);
   }
 
   @ApiOperation({
@@ -45,10 +45,8 @@ export class AuthController {
     type: TokensResponseDto
   })
   @Post('login')
-  public async login(
-    @Body() data: LoginReqeustDto
-  ): Promise<TokensResponseDto> {
-    return await this.authService.login(data);
+  public login(@Body() data: LoginRequestDto): Promise<TokensResponseDto> {
+    return this.authService.login(data);
   }
 
   @ApiOperation({
@@ -57,13 +55,11 @@ export class AuthController {
   })
   @ApiOkResponse({
     description: 'return access token',
-    type: RefreshReqeustDto
+    type: TokensResponseDto
   })
   @Post('refresh')
-  public async refresh(
-    @Body() data: RefreshReqeustDto
-  ): Promise<RefreshReqeustDto> {
-    return await this.authService.refresh(data.refreshToken);
+  public refresh(@Body() data: RefreshRequestDto): Promise<TokensResponseDto> {
+    return this.authService.refresh(data.refreshToken);
   }
 
   @ApiOperation({
@@ -77,7 +73,7 @@ export class AuthController {
   @ApiBearerAuth()
   @Protected()
   @Post('logout')
-  public async logout(@CurrentUser() userId: string): Promise<OkResponseDto> {
-    return await this.authService.logout(userId);
+  public logout(@CurrentUser() userId: string): Promise<OkResponseDto> {
+    return this.authService.logout(userId);
   }
 }

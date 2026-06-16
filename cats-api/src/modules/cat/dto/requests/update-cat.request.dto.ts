@@ -1,25 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { PartialType } from '@nestjs/swagger';
+import { CreateCatRequestDto } from './create-cat.requet.dto';
 
-export class UpdateCatRequestDto {
-  @ApiProperty({
-    example: 'CatRename'
-  })
-  @IsOptional()
-  @IsString()
-  name?: string;
-
-  @ApiProperty({
-    example: 10
-  })
-  @IsOptional()
-  @IsNumber()
-  age?: number;
-
-  @ApiProperty({
-    example: 'averageRename'
-  })
-  @IsOptional()
-  @IsString()
-  breed?: string;
-}
+export class UpdateCatRequestDto extends PartialType(CreateCatRequestDto) {}

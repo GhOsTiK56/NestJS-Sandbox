@@ -2,9 +2,11 @@ import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { Protected } from '../auth/decorators/protected.decorator';
-import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { UserProfileResponseDto } from './dto';
+import { UserResponseDto } from './dto';
+import { CurrentUser } from '../../common';
 
+@ApiBearerAuth()
+@Protected()
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -14,15 +16,11 @@ export class UserController {
     description: 'Return user profile'
   })
   @ApiOkResponse({
-    type: UserProfileResponseDto
+    type: UserResponseDto
   })
-  @ApiBearerAuth()
-  @Protected()
   @Get('@me')
   @HttpCode(HttpStatus.OK)
-  public async getProfile(
-    @CurrentUser() userId: string
-  ): Promise<UserProfileResponseDto> {
-    return await this.userService.getProfile(userId);
+  public getProfile(@CurrentUser() userId: string): Promise<UserResponseDto> {
+    return this.userService.getProfile(userId);
   }
 }

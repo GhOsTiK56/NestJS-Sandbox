@@ -6,11 +6,11 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
-  Put,
   Query
 } from '@nestjs/common';
-import { CatsService } from './cat.service';
+import { CatService } from './cat.service';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -27,13 +27,14 @@ import {
 } from './dto';
 import { CatResponseDto } from './dto';
 import { Protected } from '../auth/decorators/protected.decorator';
-import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { OkResponseDto } from '../../common/dto';
+import { CurrentUser, ParseNanoIDPipe } from '../../common';
 
+@ApiBearerAuth()
+@Protected()
 @ApiTags('Cats')
 @Controller('cats')
-export class CatsController {
-  constructor(private readonly catsService: CatsService) {}
+export class CatController {
+  constructor(private readonly catsService: CatService) {}
 
   @ApiOperation({
     summary: 'Create cat',
@@ -43,35 +44,14 @@ export class CatsController {
     description: 'The cat was created',
     type: CatResponseDto
   })
-  @ApiBearerAuth()
-  @Protected()
   @ApiBadRequestResponse({ description: 'The cat was not created' })
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  public async create(
+  public create(
     @Body() createCatDto: CreateCatRequestDto,
     @CurrentUser() userId: string
   ): Promise<CatResponseDto> {
-    return await this.catsService.create(createCatDto, userId);
-  }
-
-  @ApiOperation({
-    summary: 'Get a list of all the cats',
-    description: 'Return a list of all the cats'
-  })
-  @ApiOkResponse({
-    description: 'The list of cats was founded',
-    type: [CatResponseDto]
-  })
-  @ApiBearerAuth()
-  @Protected()
-  @Get()
-  @HttpCode(HttpStatus.OK)
-  public async findAll(
-    @Query() query: FindAllCatsRequestDto,
-    @CurrentUser() userId: string
-  ): Promise<CatResponseDto[]> {
-    return await this.catsService.findAll(userId, query.age, query.breed);
+    return this.catsService.create(userId, createCatDto);
   }
 
   @ApiOperation({
@@ -81,14 +61,30 @@ export class CatsController {
   @ApiOkResponse({ description: 'The cat is found', type: CatResponseDto })
   @ApiNotFoundResponse({ description: 'The cat was not found' })
   @HttpCode(HttpStatus.OK)
-  @ApiBearerAuth()
-  @Protected()
   @Get(':id')
-  public async findById(
-    @Param('id') id: string,
+  public findOne(
+    @Param('id', ParseNanoIDPipe) id: string,
     @CurrentUser() userId: string
   ): Promise<CatResponseDto> {
-    return await this.catsService.findWithId(id, userId);
+    return this.catsService.findOne(userId, id);
+  }
+
+  @ApiOperation({
+    summary: 'Get a list of all the cats',
+    description: 'Return a list of all the cats'
+  })
+  @ApiOkResponse({
+    description: 'The list of cats was founded',
+    type: CatResponseDto,
+    isArray: true
+  })
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  public findAll(
+    @Query() query: FindAllCatsRequestDto,
+    @CurrentUser() userId: string
+  ): Promise<CatResponseDto[]> {
+    return this.catsService.findAll(userId, query);
   }
 
   @ApiOperation({
@@ -101,52 +97,36 @@ export class CatsController {
   })
   @ApiNotFoundResponse({ description: 'The cat was not found' })
   @HttpCode(HttpStatus.OK)
-  @ApiBearerAuth()
-  @Protected()
-  @Put(':id')
-  public async update(
-    @Param('id') id: string,
+  @Patch(':id')
+  public update(
+    @Param('id', ParseNanoIDPipe) id: string,
     @Body() data: UpdateCatRequestDto,
     @CurrentUser() userId: string
   ): Promise<CatResponseDto> {
-    return await this.catsService.update(id, data, userId);
+    return this.catsService.update(userId, id, data);
   }
 
   @ApiOperation({
     summary: 'Delete a cat by ID',
     description: 'Deletes a cat by ID'
   })
-  @ApiOkResponse({
-    description: 'The cat was successfully deleted',
-    type: OkResponseDto
-  })
   @ApiNotFoundResponse({ description: 'The cat was not found' })
-  @HttpCode(HttpStatus.OK)
-  @ApiBearerAuth()
-  @Protected()
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
-  public async remove(
-    @Param('id') id: string,
+  public remove(
+    @Param('id', ParseNanoIDPipe) id: string,
     @CurrentUser() userId: string
-  ): Promise<OkResponseDto> {
-    return await this.catsService.remove(id, userId);
+  ): Promise<void> {
+    return this.catsService.remove(userId, id);
   }
 
   @ApiOperation({
     summary: 'Delete all of cats',
     description: 'Delete all of cats'
   })
-  @ApiOkResponse({
-    description: 'The list of cats where..., was founded',
-    type: OkResponseDto
-  })
-  @HttpCode(HttpStatus.OK)
-  @ApiBearerAuth()
-  @Protected()
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete()
-  public async removeAll(
-    @CurrentUser() userId: string
-  ): Promise<OkResponseDto> {
-    return await this.catsService.removeAll(userId);
+  public removeAll(@CurrentUser() userId: string): Promise<void> {
+    return this.catsService.removeAll(userId);
   }
 }

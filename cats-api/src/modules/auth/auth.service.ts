@@ -1,7 +1,6 @@
 import {
   ConflictException,
   Injectable,
-  NotFoundException,
   UnauthorizedException
 } from '@nestjs/common';
 import { RegisterRequestDto } from './dto/requests/register.request.dto';
@@ -11,9 +10,11 @@ import { JwtService } from '@nestjs/jwt';
 import type { JwtPayload } from './interfaces/jwt.interface';
 import ms, { StringValue } from 'ms';
 import { PrismaService } from '../../infrastructure/prisma/prisma.service';
-import { LoginReqeustDto } from './dto/requests/login.request.dto';
+import { LoginRequestDto } from './dto/requests/login.request.dto';
 import { nanoid } from 'nanoid';
 import { createHash } from 'crypto';
+import { Prisma } from '../../../prisma/generated/client';
+import { TokensResponseDto } from './dto';
 
 @Injectable()
 export class AuthService {
@@ -36,29 +37,30 @@ export class AuthService {
   async register(data: RegisterRequestDto) {
     const { name, age, email, password } = data;
 
-    const existUser = await this.prismaService.user.findUnique({
-      where: {
-        email
-      }
-    });
+    try {
+      const user = await this.prismaService.user.create({
+        data: {
+          name,
+          age,
+          email,
+          password: await hash(password)
+        }
+      });
 
-    if (existUser) {
-      throw new ConflictException('The user with this email already exists');
+      return this.generateTokens(user.id);
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          throw new ConflictException(
+            'The user with this email already exists'
+          );
+        }
+      }
+      throw error;
     }
-
-    const user = await this.prismaService.user.create({
-      data: {
-        name,
-        age,
-        email,
-        password: await hash(password)
-      }
-    });
-
-    return this.generateTokens(user.id);
   }
 
-  public async login(data: LoginReqeustDto) {
+  public async login(data: LoginRequestDto) {
     const { email, password } = data;
 
     const user = await this.prismaService.user.findUnique({
@@ -93,7 +95,7 @@ export class AuthService {
     return this.generateTokens(user.id);
   }
 
-  public async refresh(refreshToken: string) {
+  public async refresh(refreshToken: string): Promise<TokensResponseDto> {
     let payload: JwtPayload;
 
     try {
@@ -117,18 +119,27 @@ export class AuthService {
     }
 
     if (storedToken.revoked) {
-      throw new UnauthorizedException('Refresh token revoked');
+      await this.prismaService.refreshToken.updateMany({
+        where: {
+          userId: storedToken.userId
+        },
+        data: {
+          revoked: true
+        }
+      });
+      throw new UnauthorizedException(
+        'Compromised token detected. All sessions revoked.'
+      );
     }
 
     if (storedToken.expiresAt < new Date()) {
       throw new UnauthorizedException('Refresh token expired');
     }
 
-    const isValid =
-      createHash('sha256').update(refreshToken).digest('hex') ===
-      storedToken.tokenHash;
-
-    if (!isValid) {
+    const incomintHash = createHash('sha256')
+      .update(refreshToken)
+      .digest('hex');
+    if (storedToken.tokenHash !== incomintHash) {
       throw new UnauthorizedException('Invalid refresh token');
     }
 
@@ -162,21 +173,11 @@ export class AuthService {
     return { message: 'ok' };
   }
 
-  public async validate(userId: string) {
-    const user = await this.prismaService.user.findUnique({
-      where: {
-        id: userId
-      }
-    });
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    return user;
+  public validateUserPayload(userId: string) {
+    return { id: userId };
   }
 
-  private async generateTokens(userId: string) {
+  private async generateTokens(userId: string): Promise<TokensResponseDto> {
     const jti = nanoid();
 
     const payload: JwtPayload = { id: userId, jti };

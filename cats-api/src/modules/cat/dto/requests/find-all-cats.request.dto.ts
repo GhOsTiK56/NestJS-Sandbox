@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
 import { IsInt, IsOptional, IsString } from 'class-validator';
 
 export class FindAllCatsRequestDto {
@@ -9,7 +8,6 @@ export class FindAllCatsRequestDto {
   })
   @IsOptional()
   @IsInt()
-  @Type(() => Number)
   age?: number;
 
   @ApiProperty({
