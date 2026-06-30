@@ -1,7 +1,7 @@
 services:
   postgres:
-    container_name: postgres
-    image: postgres:latest
+    container_name: cats-api-postgres
+    image: postgres:16-alpine
     restart: always
     environment:
       - POSTGRES_USER=${DATABASE_USER}
@@ -10,12 +10,12 @@ services:
     ports:
       - 5433:5432
     volumes:
-      - postgres_data:/var/lib/postgresql
+      - cats_api_postgres_data:/var/lib/postgresql/data
     networks:
       - cats-api
 
 volumes:
-  postgres_data:
+  cats_api_postgres_data:
 
 networks:
   cats-api:
